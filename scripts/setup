@@ -1,0 +1,76 @@
+# setup - pull a copy of etoscoin 
+# and put it inside a timestamped folder.
+# rock made this
+#!/usr/bin/env bash
+
+# You should only need to run this line on a new machine or
+# a machine that needs updating.
+sudo apt-get update
+sudo apt-get install -y build-essential python-dev gcc g++ git cmake libboost-all-dev zip
+
+# This is the folder where your source code snapshots will go
+# when you are done building.
+sourcefolder=~/Source/etos-dev-build-$(date '+%Y-%m-%d-%H-%M')
+
+# Clear the workspace
+clear
+
+# Move to the Source directory
+# If you get an error here, run "mkdir ~/Source"
+echo -e "== MOVING TO ~/Source"
+cd ~/Source/
+
+# What's in the Source folder? Let's see.
+ls -al
+
+# Clone a copy of the etos coin source code
+echo -e "\n\n\n== CLONING ETOS Coin in $sourcefolder"
+
+git clone -b master https://github.com/etosworld/etoscoin $sourcefolder
+cd $sourcefolder
+ls -al
+
+# To compile, we make a build directory. This is mostly for 
+# vanity and cleanliness. You could build directly into the
+# source code folder, but it looks messy and this way makes
+# it easier to see all of your files.
+mkdir -p $sourcefolder/build && cd $sourcefolder/build
+ls -al
+
+# Move into the work area and start compiling. If you don't want 
+# to use all of your cores to compile this, or if you get errors 
+# about not enough ram/swap, you can remove the -j`nproc` from 
+# the make command.
+echo -e "\n\n\n== BUILDING ETOS Coin"
+cmake .. && make
+cd src
+ls -al
+
+# Take everything we've compiled, and put it in a zip ready for
+# distribution. 
+echo -e "\n\n\n== COMPRESSING BINARIES"
+zip etoscoin-dev-bin-$(date +%F)-linux.zip miner etwallet etosd et-service
+
+# Create directories to keep always-up-to-date binaries for 
+# ETOS Network files. Ideally, your bashrc has aliases to run
+# from this folder, or you can add it to your $PATH.
+mkdir -p ~/.Crypto/etoscoin
+mkdir ~/Binaries
+
+# Move the zip we created to the Binaries snapshot folder.
+mv *.zip ~/Binaries/
+cd ~/Binaries
+
+# Copy the binaries to the folder we just created for them.
+# Remove the files that are already there just in case.
+rm ~/.Crypto/etoscoin/miner
+rm ~/.Crypto/etoscoin/etwallet
+rm ~/.Crypto/etoscoin/etosd
+rm ~/.Crypto/etoscoin/et-service
+cp miner ~/.Crypto/etoscoin/miner
+cp etwallet ~/.Crypto/etoscoin/etwallet
+cp etosd ~/.Crypto/etoscoin/etosd
+cp et-service ~/.Crypto/etoscoin/et-service
+
+
+
