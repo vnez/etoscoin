@@ -38,6 +38,7 @@ ETOS Coin comes with its own basic CPU miner, but you can also use any Monero mi
 - et-service, wallet rpc service,for advanced user
 - miner, simple etos coin cpu miner. for serious mining, use XMR-Stak or xmrig instead.
 - miner and etosd may exit accidently. for long run purpose,use this command: 
+
   `while :; do ./miner --threads 1 --address etXXXXXX ;sleep 1;done`
 
 #### Thanks
